@@ -1,1 +1,1 @@
-expressql==1.0.0
+expressql>=1.0.0

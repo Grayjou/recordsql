@@ -1,6 +1,6 @@
 [project]
 name = "recordsql"
-version = "0.2.1"
+version = "0.2.2"
 description = "A Python-based SQL query builder with a fluent and composable interface, built on expressql."
 readme = "README.md"
 license = "MIT"
