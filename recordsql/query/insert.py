@@ -131,6 +131,15 @@ class InsertQuery(RecordQuery):
 
         return placeholder_query, injections
 
+    def sql_string(self, *args, **kwargs) -> str:
+        """
+        Return the SQL string for this INSERT query.
+        """
+        pair = self.placeholder_pair(*args, **kwargs)
+        if isinstance(pair, (list, tuple)) and pair:
+            return pair[0]
+        raise NotImplementedError("InsertQuery must provide a placeholder_pair returning (sql, params)")
+
     @normalize_args(skip=1)
     def COLS(self, *args: SQLCol) -> InsertQuery:
         validate_monolist(*args, monotype=SQLCol)

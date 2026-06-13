@@ -47,6 +47,16 @@ class CountQuery(RecordQuery):
             ignore_forbidden_chars=self.ignore_forbidden_characters,
         )
 
+    def sql_string(self, *args, **kwargs) -> str:
+        """
+        Return the SQL string for this COUNT query.
+        Delegates to `placeholder_pair` and returns the SQL text portion.
+        """
+        pair = self.placeholder_pair(*args, **kwargs)
+        if isinstance(pair, (list, tuple)) and pair:
+            return pair[0]
+        raise NotImplementedError("CountQuery must provide a placeholder_pair returning (sql, params)")
+
     def SET(self, *args, **kwargs) -> None:
         raise NotImplementedError("SET clause is not supported in COUNT queries.")
 

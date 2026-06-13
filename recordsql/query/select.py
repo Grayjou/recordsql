@@ -329,6 +329,20 @@ class SelectQuery(RecordQuery):
         string, _ = self.placeholder_pair(include_alias=include_alias)
         return string
 
+    def sql_string(self, *args, include_alias: bool = True, **kwargs) -> str:
+        """
+        Return the SQL string for this SELECT query.
+        Delegates to `placeholder_str` to include alias handling.
+        """
+        try:
+            return self.placeholder_str(*args, include_alias=include_alias, **kwargs)
+        except TypeError:
+            # fallback to placeholder_pair
+            pair = self.placeholder_pair(*args, **kwargs)
+            if isinstance(pair, (list, tuple)) and pair:
+                return pair[0]
+        raise NotImplementedError("SelectQuery must provide placeholder_str or placeholder_pair returning SQL string")
+
     def AS(self, alias=None):
         """
         Sets the alias for the query.

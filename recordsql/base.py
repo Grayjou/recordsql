@@ -101,3 +101,34 @@ class RecordQuery(SQLExpression):
         """
         # Override the __getattr__ method to handle dynamic attribute access in SQLExpression
         raise AttributeError(f"{name} not found in {self.__class__.__name__}")
+
+    def sql_string(self, *args, **kwargs) -> str:
+        """
+        Return the SQL string representation of this query.
+
+        This method delegates to the query subclass implementation of
+        `placeholder_pair` / `placeholder_str` so that external callers
+        (for example code in the expressql package that expects
+        `SQLExpression.sql_string`) can obtain a SQL string without
+        raising NotImplementedError.
+
+        Any positional/keyword arguments are forwarded to
+        `placeholder_pair`/`placeholder_str` when possible.
+        """
+        # Prefer a simple string-returning helper if available
+        if hasattr(self, "placeholder_str"):
+            try:
+                return self.placeholder_str(*args, **kwargs)
+            except TypeError:
+                # fallback if signature differs
+                pass
+
+        # Fall back to placeholder_pair which should return (sql, params)
+        if hasattr(self, "placeholder_pair"):
+            pair = self.placeholder_pair(*args, **kwargs)
+            if isinstance(pair, (list, tuple)) and len(pair) >= 1:
+                return pair[0]
+
+        # As a last resort, raise a clear error indicating the subclass must
+        # implement placeholder_pair/placeholder_str.
+        raise NotImplementedError("Subclasses of RecordQuery must implement placeholder_pair or placeholder_str to produce SQL strings.")

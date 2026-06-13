@@ -166,6 +166,15 @@ class UpdateQuery(RecordQuery):
 
         return query, injections
 
+    def sql_string(self, *args, **kwargs) -> str:
+        """
+        Return the SQL string for this UPDATE query.
+        """
+        pair = self.placeholder_pair(*args, **kwargs)
+        if isinstance(pair, (list, tuple)) and pair:
+            return pair[0]
+        raise NotImplementedError("UpdateQuery must provide a placeholder_pair returning (sql, params)")
+
     def __repr__(self):
         return f"UpdateQuery(table={self.table_name}, set={self.set_clauses}, where={self.condition})"
 

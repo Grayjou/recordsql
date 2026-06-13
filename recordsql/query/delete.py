@@ -56,6 +56,15 @@ class DeleteQuery(RecordQuery):
             ignore_forbidden_chars=self.ignore_forbidden_characters,
         )
 
+    def sql_string(self, *args, **kwargs) -> str:
+        """
+        Return the SQL string for this DELETE query.
+        """
+        pair = self.placeholder_pair(*args, **kwargs)
+        if isinstance(pair, (list, tuple)) and pair:
+            return pair[0]
+        raise NotImplementedError("DeleteQuery must provide a placeholder_pair returning (sql, params)")
+
     def __repr__(self):
         return f"DeleteQuery(table={self.table_name}, where={self.condition}, returning={self.returning})"
 
