@@ -131,4 +131,7 @@ class RecordQuery(SQLExpression):
 
         # As a last resort, raise a clear error indicating the subclass must
         # implement placeholder_pair/placeholder_str.
-        raise NotImplementedError("Subclasses of RecordQuery must implement placeholder_pair or placeholder_str to produce SQL strings.")
+        raise NotImplementedError(
+            "Subclasses of RecordQuery must implement placeholder_pair "
+            "or placeholder_str to produce SQL strings."
+        )
